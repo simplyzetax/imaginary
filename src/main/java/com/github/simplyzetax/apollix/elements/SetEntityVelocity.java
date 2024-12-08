@@ -17,17 +17,17 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 
-public class GetTargetEntity extends Element {
-    public GetTargetEntity(UltraCustomizer ultraCustomizer) {
+public class SetEntityVelocity extends Element {
+    public SetEntityVelocity(UltraCustomizer ultraCustomizer) {
         super(ultraCustomizer);
     }
 
     public String getName() {
-        return "Get Target Entity NEW";
+        return "Set Entity Velocity";
     }
 
     public String getInternalName() {
-        return "get-target-entity";
+        return "set-entity-velocity";
     }
 
     public boolean isHidingIfNotCompatible() {
@@ -35,11 +35,11 @@ public class GetTargetEntity extends Element {
     }
 
     public XMaterial getMaterial() {
-        return XMaterial.SPYGLASS;
+        return XMaterial.SLIME_BALL;
     }
 
     public String[] getDescription() {
-        return new String[] { "Gets the target entity" };
+        return new String[] { "Sets the velocity of the entity" };
     }
 
     public Argument[] getArguments(ElementInfo elementInfo) {
@@ -48,12 +48,9 @@ public class GetTargetEntity extends Element {
 
     public OutcomingVariable[] getOutcomingVariables(ElementInfo elementInfo) {
         return new OutcomingVariable[] {
-                new OutcomingVariable("x", "X", DataType.NUMBER, elementInfo),
-                new OutcomingVariable("y", "Y", DataType.NUMBER, elementInfo),
-                new OutcomingVariable("z", "Z", DataType.NUMBER, elementInfo),
-                new OutcomingVariable("distance", "Distance", DataType.NUMBER, elementInfo),
-                new OutcomingVariable("found", "Found entity", DataType.BOOLEAN, elementInfo),
-                new OutcomingVariable("entity_uuid", "Entity UUID", DataType.STRING, elementInfo)
+                new OutcomingVariable("x", "X Axis", DataType.NUMBER, elementInfo),
+                new OutcomingVariable("y", "Y Axis", DataType.NUMBER, elementInfo),
+                new OutcomingVariable("z", "Z Axis", DataType.NUMBER, elementInfo),
         };
     }
 

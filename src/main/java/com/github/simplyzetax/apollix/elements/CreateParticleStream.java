@@ -4,7 +4,6 @@ import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.datatypes.DataType;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -64,46 +63,47 @@ public class CreateParticleStream extends Element {
     }
 
     @Override
-public void run(ElementInfo elementInfo, ScriptInstance scriptInstance) {
-try {
-    Player player = (Player) getArguments(elementInfo)[0].getValue(scriptInstance);
-    String particleName = (String) getArguments(elementInfo)[1].getValue(scriptInstance);
-    Number particleCount = (Number) getArguments(elementInfo)[2].getValue(scriptInstance);
-    Number maxRange = (Number) getArguments(elementInfo)[3].getValue(scriptInstance);
+    public void run(ElementInfo elementInfo, ScriptInstance scriptInstance) {
+        try {
+            Player player = (Player) getArguments(elementInfo)[0].getValue(scriptInstance);
+            String particleName = (String) getArguments(elementInfo)[1].getValue(scriptInstance);
+            Number particleCount = (Number) getArguments(elementInfo)[2].getValue(scriptInstance);
+            Number maxRange = (Number) getArguments(elementInfo)[3].getValue(scriptInstance);
 
-    // Validate and parse particle type
-    Particle particle;
-    try {
-        particle = Particle.valueOf(particleName.toUpperCase());
-    } catch (IllegalArgumentException e) {
-        player.sendMessage(ChatColor.RED + "Invalid particle type: " + particleName);
-        return;
+            Particle particle = getParticleType(player, particleName);
+            if (particle == null) return;
+
+            Location loc = player.getEyeLocation();
+            Location target = player.getTargetBlock(null, maxRange.intValue()).getLocation();
+            Vector direction = target.toVector().subtract(loc.toVector()).normalize();
+            double distance = loc.distance(target);
+            double stepSize = 0.1;
+            int steps = (int) (distance / stepSize);
+
+            spawnParticles(player, particle, loc, direction, particleCount.intValue(), stepSize, steps);
+            player.spawnParticle(Particle.END_ROD, target, 5);
+
+        } catch (Exception e) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Error in Particle Stream: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        getConnectors(elementInfo)[0].run(scriptInstance);
     }
 
-    Location loc = player.getEyeLocation(); // Use player's eye location
-    Location target = player.getTargetBlock(null, maxRange.intValue()).getLocation();
-
-    // Calculate direction vector
-    Vector direction = target.toVector().subtract(loc.toVector()).normalize();
-    double distance = loc.distance(target);
-    double stepSize = 0.1; // Smaller step size for more accuracy
-    int steps = (int) (distance / stepSize);
-
-    // Spawn particles along the path
-    for (int i = 0; i < steps; i++) {
-        player.spawnParticle(particle, loc, particleCount.intValue(), 0, 0, 0, 0);
-        loc.add(direction.clone().multiply(stepSize));
+    private Particle getParticleType(Player player, String particleName) {
+        try {
+            return Particle.valueOf(particleName.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            player.sendMessage(ChatColor.RED + "Invalid particle type: " + particleName);
+            return null;
+        }
     }
 
-    // Optional: spawn end particles
-    player.spawnParticle(Particle.END_ROD, target, 5);
-
-} catch (Exception e) {
-    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Error in Particle Stream: " + e.getMessage());
-    e.printStackTrace();
-}
-
-    // Run next connector
-    getConnectors(elementInfo)[0].run(scriptInstance);
-}
+    private void spawnParticles(Player player, Particle particle, Location loc, Vector direction, int particleCount, double stepSize, int steps) {
+        for (int i = 0; i < steps; i++) {
+            player.spawnParticle(particle, loc, particleCount, 0, 0, 0, 0);
+            loc.add(direction.clone().multiply(stepSize));
+        }
+    }
 }

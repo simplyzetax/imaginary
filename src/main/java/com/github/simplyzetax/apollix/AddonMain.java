@@ -1,11 +1,11 @@
 package com.github.simplyzetax.apollix;
 
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
+import me.TechsCode.UltraCustomizer.scriptSystem.objects.Element;
 import org.bukkit.event.Listener;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Used as a main class of addons.
@@ -20,7 +20,6 @@ public class AddonMain implements Listener {
         this.name = name; this.author = author;
         try {
             onLoad();
-            UltraCustomizer.getInstance().log(name + " onLoad executed. " + "Author: " + author);
         } catch (Exception e) {
             UltraCustomizer.getInstance().log(name + " onLoad failed please contact author. " + "Author: " + author);
             e.printStackTrace();
@@ -32,7 +31,7 @@ public class AddonMain implements Listener {
      * You can create fields any anything in this class.
      */
     private void onLoad() {
-        
+        UltraCustomizer.getInstance().log(name + " onLoad executed. " + "Author: " + author);
     }
 
     public String getName() {

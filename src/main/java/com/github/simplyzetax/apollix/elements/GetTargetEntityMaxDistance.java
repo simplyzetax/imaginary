@@ -1,15 +1,10 @@
 package com.github.simplyzetax.apollix.elements;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.github.simplyzetax.apollix.data.EntityStore;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.datatypes.DataType;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -17,8 +12,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 
-public class GetTargetEntity extends Element {
-    public GetTargetEntity(UltraCustomizer ultraCustomizer) {
+import java.util.ArrayList;
+import java.util.List;
+
+public class GetTargetEntityMaxDistance extends Element {
+    public GetTargetEntityMaxDistance(UltraCustomizer ultraCustomizer) {
         super(ultraCustomizer);
     }
 
@@ -120,7 +118,7 @@ public class GetTargetEntity extends Element {
             EntityStore.entities.put(target.getUniqueId(), target);
 
             final Location entityLoc = target.getLocation();
-            final long distance = (long) player.getLocation().distance(entityLoc);
+            final double distance = player.getLocation().distance(entityLoc);
 
             getOutcomingVariables(elementInfo)[0].register(scriptInstance, new DataRequester() {
                 public Object request() {
