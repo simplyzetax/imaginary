@@ -47,8 +47,8 @@ public class CreateParticleStream extends Element {
         return new Argument[]{
                 new Argument("player", "Player", DataType.PLAYER, elementInfo),
                 new Argument("particle", "Particle Type", DataType.STRING, elementInfo),
-                new Argument("count", "Particle Count", DataType.NUMBER, elementInfo),
-                new Argument("range", "Max Range", DataType.NUMBER, elementInfo)
+                new Argument("count", "Particle Count", DataType.DOUBLE, elementInfo),
+                new Argument("range", "Max Range", DataType.DOUBLE, elementInfo)
         };
     }
 

@@ -1,21 +1,15 @@
 package com.github.simplyzetax.apollix.elements;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 import com.github.simplyzetax.apollix.data.EntityStore;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.datatypes.DataType;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.util.BlockIterator;
+import org.bukkit.util.Vector;
 
 public class SetEntityVelocity extends Element {
     public SetEntityVelocity(UltraCustomizer ultraCustomizer) {
@@ -43,151 +37,45 @@ public class SetEntityVelocity extends Element {
     }
 
     public Argument[] getArguments(ElementInfo elementInfo) {
-        return new Argument[] { new Argument("player", "Player", DataType.PLAYER, elementInfo) };
+        return new Argument[] {
+            new Argument("x", "X Axis", DataType.DOUBLE, elementInfo),
+            new Argument("y", "Y Axis", DataType.DOUBLE, elementInfo),
+            new Argument("z", "Z Axis", DataType.DOUBLE, elementInfo),
+            new Argument("entity_id", "Entity UUID", DataType.STRING, elementInfo)
+        };
     }
 
     public OutcomingVariable[] getOutcomingVariables(ElementInfo elementInfo) {
-        return new OutcomingVariable[] {
-                new OutcomingVariable("x", "X Axis", DataType.NUMBER, elementInfo),
-                new OutcomingVariable("y", "Y Axis", DataType.NUMBER, elementInfo),
-                new OutcomingVariable("z", "Z Axis", DataType.NUMBER, elementInfo),
-        };
+        return new OutcomingVariable[] {};
     }
 
     public Child[] getConnectors(ElementInfo elementInfo) {
         return new Child[] { new DefaultChild(elementInfo, "next") };
     }
 
-    public LivingEntity getTarget(Player player) {
-        int range = 60;
-        List<Entity> nearbyE = player.getNearbyEntities(range, range, range);
-        ArrayList<LivingEntity> livingE = new ArrayList<>();
-
-        for (Entity e : nearbyE) {
-            if (e instanceof LivingEntity) {
-                livingE.add((LivingEntity)e);
-            }
-        }
-
-        LivingEntity target = null;
-        BlockIterator bItr = new BlockIterator(player, range);
-
-        while (bItr.hasNext()) {
-            Block block = bItr.next();
-            int bx = block.getX();
-            int by = block.getY();
-            int bz = block.getZ();
-
-            for (LivingEntity e : livingE) {
-                Location loc = e.getLocation();
-                double ex = loc.getX();
-                double ey = loc.getY();
-                double ez = loc.getZ();
-                if (bx - 0.75D <= ex && ex <= bx + 1.75D &&
-                        bz - 0.75D <= ez && ez <= bz + 1.75D &&
-                        (by - 1) <= ey && ey <= by + 2.5D) {
-                    target = e;
-                }
-            }
-        }
-
-        return target;
-    }
-
     public void run(ElementInfo elementInfo, ScriptInstance scriptInstance) {
-        Argument playerArgument = getArguments(elementInfo)[0];
-        if (playerArgument == null || playerArgument.getValue(scriptInstance) == null) {
-            getOutcomingVariables(elementInfo)[4].register(scriptInstance, new DataRequester() {
-                public Object request() {
-                    return false;
-                }
-            });
+        double x = (double) getArguments(elementInfo)[0].getValue(scriptInstance);
+        double y = (double) getArguments(elementInfo)[1].getValue(scriptInstance);
+        double z = (double) getArguments(elementInfo)[2].getValue(scriptInstance);
+        String entityIdStr = (String) getArguments(elementInfo)[3].getValue(scriptInstance);
+
+        UUID entity_id;
+        try {
+            entity_id = UUID.fromString(entityIdStr);
+        } catch (IllegalArgumentException e) {
+            UltraCustomizer.getInstance().log(ChatColor.RED + "Invalid UUID format: " + entityIdStr);
             getConnectors(elementInfo)[0].run(scriptInstance);
             return;
         }
 
-        Player player = (Player) playerArgument.getValue(scriptInstance);
-
-        try {
-            LivingEntity target = getTarget(player);
-            if (target == null) {
-                throw new Exception("No target found");
-            }
-
-            EntityStore.entities.put(target.getUniqueId(), target);
-
-            final Location entityLoc = target.getLocation();
-            final long distance = (long) player.getLocation().distance(entityLoc);
-
-            getOutcomingVariables(elementInfo)[0].register(scriptInstance, new DataRequester() {
-                public Object request() {
-                    return entityLoc.getX();
-                }
-            });
-            getOutcomingVariables(elementInfo)[1].register(scriptInstance, new DataRequester() {
-                public Object request() {
-                    return entityLoc.getY();
-                }
-            });
-            getOutcomingVariables(elementInfo)[2].register(scriptInstance, new DataRequester() {
-                public Object request() {
-                    return entityLoc.getZ();
-                }
-            });
-            getOutcomingVariables(elementInfo)[3].register(scriptInstance, new DataRequester() {
-                public Object request() {
-                    return distance;
-                }
-            });
-            getOutcomingVariables(elementInfo)[4].register(scriptInstance, new DataRequester() {
-                public Object request() {
-                    return true;
-                }
-            });
-            getOutcomingVariables(elementInfo)[5].register(scriptInstance, new DataRequester() {
-                public Object request() {
-                    return target.getUniqueId().toString();
-                }
-            });
-        } catch (Exception e) {
-
-            getOutcomingVariables(elementInfo)[0].register(scriptInstance, new DataRequester() {
-                public Object request() {
-                    return 0;
-                }
-            });
-
-            getOutcomingVariables(elementInfo)[1].register(scriptInstance, new DataRequester() {
-                public Object request() {
-                    return 0;
-                }
-            });
-
-            getOutcomingVariables(elementInfo)[2].register(scriptInstance, new DataRequester() {
-                public Object request() {
-                    return 0;
-                }
-            });
-
-            getOutcomingVariables(elementInfo)[3].register(scriptInstance, new DataRequester() {
-                public Object request() {
-                    return 0;
-                }
-            });
-
-            getOutcomingVariables(elementInfo)[4].register(scriptInstance, new DataRequester() {
-                public Object request() {
-                    return false;
-                }
-            });
-
-            getOutcomingVariables(elementInfo)[5].register(scriptInstance, new DataRequester() {
-                public Object request() {
-                    return "";
-                }
-            });
-
+        LivingEntity entity = EntityStore.entities.get(entity_id);
+        if (entity == null) {
+            UltraCustomizer.getInstance().log(ChatColor.RED + "Entity not found for velocity change.");
+        } else {
+            Vector velocity = new Vector(x, y, z);
+            entity.setVelocity(velocity);
         }
+
         getConnectors(elementInfo)[0].run(scriptInstance);
     }
 }

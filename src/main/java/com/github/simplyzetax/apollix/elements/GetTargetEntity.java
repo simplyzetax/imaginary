@@ -48,10 +48,10 @@ public class GetTargetEntity extends Element {
 
     public OutcomingVariable[] getOutcomingVariables(ElementInfo elementInfo) {
         return new OutcomingVariable[] {
-                new OutcomingVariable("x", "X", DataType.NUMBER, elementInfo),
-                new OutcomingVariable("y", "Y", DataType.NUMBER, elementInfo),
-                new OutcomingVariable("z", "Z", DataType.NUMBER, elementInfo),
-                new OutcomingVariable("distance", "Distance", DataType.NUMBER, elementInfo),
+                new OutcomingVariable("x", "X", DataType.DOUBLE, elementInfo),
+                new OutcomingVariable("y", "Y", DataType.DOUBLE, elementInfo),
+                new OutcomingVariable("z", "Z", DataType.DOUBLE, elementInfo),
+                new OutcomingVariable("distance", "Distance", DataType.DOUBLE, elementInfo),
                 new OutcomingVariable("found", "Found entity", DataType.BOOLEAN, elementInfo),
                 new OutcomingVariable("entity_uuid", "Entity UUID", DataType.STRING, elementInfo)
         };

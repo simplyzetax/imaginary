@@ -40,7 +40,7 @@ public class SetEntityHealth extends Element {
 
     public Argument[] getArguments(ElementInfo elementInfo) {
         return new Argument[] {
-                new Argument("entity_id", "Entity ID", DataType.STRING, elementInfo),
+                new Argument("entity_id", "Entity UUID", DataType.STRING, elementInfo),
                 new Argument("health", "Health", DataType.NUMBER, elementInfo)
         };
     }
