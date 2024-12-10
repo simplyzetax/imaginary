@@ -35,7 +35,7 @@ public class Multiply extends Element {
     }
 
     public OutcomingVariable[] getOutcomingVariables(ElementInfo elementInfo) {
-        return new OutcomingVariable[]{new OutcomingVariable("result", "Result", DataType.NUMBER, elementInfo)};
+        return new OutcomingVariable[]{new OutcomingVariable("result", "Result", DataType.DOUBLE, elementInfo)};
     }
 
     public Child[] getConnectors(ElementInfo elementInfo) {
@@ -44,9 +44,9 @@ public class Multiply extends Element {
 
     public void run(ElementInfo info, ScriptInstance instance) {
         try {
-            final Number valueOne = (Number) getArguments(info)[0].getValue(instance);
-            final Number valueTwo = (Number) getArguments(info)[1].getValue(instance);
-            final Long result = valueOne.longValue() * valueTwo.longValue();
+            final Double valueOne = (Double) getArguments(info)[0].getValue(instance);
+            final Double valueTwo = (Double) getArguments(info)[1].getValue(instance);
+            final Double result = valueOne * valueTwo;
             getOutcomingVariables(info)[0].register(instance, new DataRequester() {
                 public Object request() {
                     return result;

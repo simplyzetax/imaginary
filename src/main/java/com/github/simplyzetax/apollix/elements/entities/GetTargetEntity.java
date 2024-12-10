@@ -1,19 +1,20 @@
 package com.github.simplyzetax.apollix.elements.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.github.simplyzetax.apollix.data.EntityStore;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.datatypes.DataType;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GetTargetEntity extends Element {
     public GetTargetEntity(UltraCustomizer ultraCustomizer) {
@@ -37,15 +38,15 @@ public class GetTargetEntity extends Element {
     }
 
     public String[] getDescription() {
-        return new String[] { "Gets the target entity" };
+        return new String[]{"Gets the target entity", "Max range based on server view distance", "Returns entity location, distance, and UUID", "Returns false if no entity found", "Current max range: " + (Bukkit.getViewDistance() * 16) + " blocks"};
     }
 
     public Argument[] getArguments(ElementInfo elementInfo) {
-        return new Argument[] { new Argument("player", "Player", DataType.PLAYER, elementInfo) };
+        return new Argument[]{new Argument("player", "Player", DataType.PLAYER, elementInfo)};
     }
 
     public OutcomingVariable[] getOutcomingVariables(ElementInfo elementInfo) {
-        return new OutcomingVariable[] {
+        return new OutcomingVariable[]{
                 new OutcomingVariable("x", "X", DataType.DOUBLE, elementInfo),
                 new OutcomingVariable("y", "Y", DataType.DOUBLE, elementInfo),
                 new OutcomingVariable("z", "Z", DataType.DOUBLE, elementInfo),
@@ -56,43 +57,43 @@ public class GetTargetEntity extends Element {
     }
 
     public Child[] getConnectors(ElementInfo elementInfo) {
-        return new Child[] { new DefaultChild(elementInfo, "next") };
+        return new Child[]{new DefaultChild(elementInfo, "next")};
     }
 
     public LivingEntity getTarget(Player player) {
-        int range = 60;
-        List<Entity> nearbyE = player.getNearbyEntities(range, range, range);
-        ArrayList<LivingEntity> livingE = new ArrayList<>();
+        int distance = Bukkit.getViewDistance() * 16;
+        List<Entity> nearbyEntities = player.getNearbyEntities(distance, distance, distance);
+        List<LivingEntity> livingEntities = new ArrayList<>();
 
-        for (Entity e : nearbyE) {
-            if (e instanceof LivingEntity) {
-                livingE.add((LivingEntity)e);
+        for (Entity entity : nearbyEntities) {
+            if (entity instanceof LivingEntity) {
+                livingEntities.add((LivingEntity) entity);
             }
         }
 
-        LivingEntity target = null;
-        BlockIterator bItr = new BlockIterator(player, range);
-
-        while (bItr.hasNext()) {
-            Block block = bItr.next();
+        BlockIterator blockIterator = new BlockIterator(player, distance);
+        while (blockIterator.hasNext()) {
+            Block block = blockIterator.next();
             int bx = block.getX();
             int by = block.getY();
             int bz = block.getZ();
 
-            for (LivingEntity e : livingE) {
-                Location loc = e.getLocation();
+            for (LivingEntity livingEntity : livingEntities) {
+                Location loc = livingEntity.getLocation();
                 double ex = loc.getX();
                 double ey = loc.getY();
                 double ez = loc.getZ();
+
                 if (bx - 0.75D <= ex && ex <= bx + 1.75D &&
                         bz - 0.75D <= ez && ez <= bz + 1.75D &&
-                        (by - 1) <= ey && ey <= by + 2.5D) {
-                    target = e;
+                        (by - 1) <= ey && ey <= by + 2.5D &&
+                        player.hasLineOfSight(livingEntity)) {
+                    return livingEntity;
                 }
             }
         }
 
-        return target;
+        return null;
     }
 
     public void run(ElementInfo elementInfo, ScriptInstance scriptInstance) {

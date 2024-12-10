@@ -4,7 +4,6 @@ import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.datatypes.DataType;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Arrow;
@@ -39,7 +38,7 @@ public class CreateProjectile extends Element {
 
     @Override
     public String[] getDescription() {
-        return new String[]{"Creates a projectile"};
+        return new String[]{"Creates a projectile", "and launches it from the player", "Possible types: ARROW, SNOWBALL, INVISIBLE"};
     }
 
     @Override
@@ -74,52 +73,37 @@ public class CreateProjectile extends Element {
 
             switch (type) {
                 case "ARROW":
-                    handleArrowProjectile(elementInfo, scriptInstance, player, velocity, data);
+                    launchProjectile(player, Arrow.class, velocity, data, elementInfo, scriptInstance);
                     break;
                 case "SNOWBALL":
-                    handleSnowballProjectile(elementInfo, scriptInstance, player, velocity, data);
+                    launchProjectile(player, Snowball.class, velocity, data, elementInfo, scriptInstance);
                     break;
                 case "INVISIBLE":
-                    handleInvisibleProjectile(elementInfo, scriptInstance, player, velocity, data);
+                    Arrow invisible = player.launchProjectile(Arrow.class);
+                    invisible.setVelocity(player.getLocation().getDirection().multiply(velocity.doubleValue()));
+                    invisible.setCustomName(data);
+                    invisible.setCustomNameVisible(false);
+                    invisible.setSilent(true);
+                    registerProjectileUID(elementInfo, scriptInstance, invisible);
                     break;
                 default:
                     player.sendMessage(ChatColor.RED + "Invalid projectile type!");
-                    break;
             }
         } catch (Exception e) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Error: " + e.getMessage());
         }
-
-        // Run next connector
         getConnectors(elementInfo)[0].run(scriptInstance);
     }
 
-    private void handleArrowProjectile(ElementInfo elementInfo, ScriptInstance scriptInstance, Player player, Number velocity, String data) {
-        Arrow arrow = player.launchProjectile(Arrow.class);
-        arrow.setVelocity(player.getLocation().getDirection().multiply(velocity.doubleValue()));
-        arrow.setCustomName(data);
-        registerProjectileUID(elementInfo, scriptInstance, arrow);
-    }
-
-    private void handleSnowballProjectile(ElementInfo elementInfo, ScriptInstance scriptInstance, Player player, Number velocity, String data) {
-        Snowball snowball = player.launchProjectile(Snowball.class);
-        snowball.setVelocity(player.getLocation().getDirection().multiply(velocity.doubleValue()));
-        snowball.setCustomName(data);
-        registerProjectileUID(elementInfo, scriptInstance, snowball);
-    }
-
-    private void handleInvisibleProjectile(ElementInfo elementInfo, ScriptInstance scriptInstance, Player player, Number velocity, String data) {
-        Arrow invisible = player.launchProjectile(Arrow.class);
-        invisible.setVelocity(player.getLocation().getDirection().multiply(velocity.doubleValue()));
-        invisible.setCustomName(data);
-        invisible.setCustomNameVisible(false);
-        invisible.setSilent(true);
-        registerProjectileUID(elementInfo, scriptInstance, invisible);
+    private <T extends org.bukkit.entity.Projectile> void launchProjectile(Player player, Class<T> projectileClass, Number velocity, String data, ElementInfo elementInfo, ScriptInstance scriptInstance) {
+        T projectile = player.launchProjectile(projectileClass);
+        projectile.setVelocity(player.getLocation().getDirection().multiply(velocity.doubleValue()));
+        projectile.setCustomName(data);
+        registerProjectileUID(elementInfo, scriptInstance, projectile);
     }
 
     private void registerProjectileUID(ElementInfo elementInfo, ScriptInstance scriptInstance, org.bukkit.entity.Projectile projectile) {
         getOutcomingVariables(elementInfo)[0].register(scriptInstance, new DataRequester() {
-            @Override
             public Object request() {
                 return projectile.getUniqueId().toString();
             }

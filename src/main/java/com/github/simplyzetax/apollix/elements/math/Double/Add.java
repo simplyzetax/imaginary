@@ -11,7 +11,7 @@ public class Add extends Element {
     }
 
     public String getName() {
-        return "Add (Double";
+        return "Add (Double)";
     }
 
     public String getInternalName() {
@@ -31,22 +31,29 @@ public class Add extends Element {
     }
 
     public Argument[] getArguments(ElementInfo elementInfo) {
-        return new Argument[] { new Argument("valueOne", "1st Value", DataType.DOUBLE, elementInfo), new Argument("valueTwo", "2nd Value", DataType.NUMBER, elementInfo) };
+        return new Argument[] {
+            new Argument("valueOne", "1st Value", DataType.DOUBLE, elementInfo),
+            new Argument("valueTwo", "2nd Value", DataType.DOUBLE, elementInfo)
+        };
     }
 
     public OutcomingVariable[] getOutcomingVariables(ElementInfo elementInfo) {
-        return new OutcomingVariable[] { new OutcomingVariable("result", "Result", DataType.DOUBLE, elementInfo) };
+        return new OutcomingVariable[] {
+            new OutcomingVariable("result", "Result", DataType.DOUBLE, elementInfo)
+        };
     }
 
     public Child[] getConnectors(ElementInfo elementInfo) {
-        return new Child[] { (Child)new DefaultChild(elementInfo, "next") };
+        return new Child[] {
+            new DefaultChild(elementInfo, "next")
+        };
     }
 
     public void run(ElementInfo info, ScriptInstance instance) {
         try {
-            Long valueOne = (Long)getArguments(info)[0].getValue(instance);
-            Long valueTwo = (Long)getArguments(info)[1].getValue(instance);
-            final Long result = Long.valueOf(valueOne.longValue() + valueTwo.longValue());
+            Double valueOne = (Double) getArguments(info)[0].getValue(instance);
+            Double valueTwo = (Double) getArguments(info)[1].getValue(instance);
+            final Double result = valueOne + valueTwo;
             getOutcomingVariables(info)[0].register(instance, new DataRequester() {
                 public Object request() {
                     return result;

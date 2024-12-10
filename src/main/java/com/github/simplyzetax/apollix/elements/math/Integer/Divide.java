@@ -15,7 +15,7 @@ public class Divide extends Element {
     }
 
     public String getInternalName() {
-        return "computation-divid";
+        return "computation-divide";
     }
 
     public boolean isHidingIfNotCompatible() {

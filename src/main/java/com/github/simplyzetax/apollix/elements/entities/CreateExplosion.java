@@ -5,6 +5,7 @@ import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.datatypes.DataType;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 
 public class CreateExplosion extends Element {
 
@@ -34,6 +35,7 @@ public class CreateExplosion extends Element {
 
     public Argument[] getArguments(ElementInfo elementInfo) {
         return new Argument[] {
+                new Argument("world", "World", DataType.STRING, elementInfo),
                 new Argument("x", "X", DataType.DOUBLE, elementInfo),
                 new Argument("y", "Y", DataType.DOUBLE, elementInfo),
                 new Argument("z", "Z", DataType.DOUBLE, elementInfo),
@@ -53,6 +55,7 @@ public class CreateExplosion extends Element {
 
     public void run(ElementInfo elementInfo, ScriptInstance scriptInstance) {
 
+        String world = (String) getArguments(elementInfo)[0].getValue(scriptInstance);
         double x = Double.parseDouble(getArguments(elementInfo)[0].getValue(scriptInstance).toString());
         double y = Double.parseDouble(getArguments(elementInfo)[1].getValue(scriptInstance).toString());
         double z = Double.parseDouble(getArguments(elementInfo)[2].getValue(scriptInstance).toString());
@@ -61,7 +64,12 @@ public class CreateExplosion extends Element {
         boolean fire = (boolean) getArguments(elementInfo)[4].getValue(scriptInstance);
         boolean breakBlocks = (boolean) getArguments(elementInfo)[5].getValue(scriptInstance);
 
-        Bukkit.getWorlds().get(0).createExplosion(x, y, z, power, fire, breakBlocks);
+        World bukkitWorld = Bukkit.getWorld(world);
+        if (bukkitWorld == null) {
+            throw new RuntimeException("World for CreateExplosion not found");
+        }
+
+        bukkitWorld.createExplosion(x, y, z, power, fire, breakBlocks);
 
         getConnectors(elementInfo)[0].run(scriptInstance);
     }

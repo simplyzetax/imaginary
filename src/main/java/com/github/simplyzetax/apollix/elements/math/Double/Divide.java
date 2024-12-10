@@ -14,6 +14,7 @@ public class Divide extends Element {
         return "Divide (Double)";
     }
 
+    //TODO: I know it says float, but it's actually double. I'll fix it when my scripts dont rely on it anymore.
     public String getInternalName() {
         return "computation-divide-float";
     }

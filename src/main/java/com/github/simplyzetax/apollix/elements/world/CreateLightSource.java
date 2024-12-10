@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class CreateLightSource extends Element {
 
@@ -39,10 +40,11 @@ public class CreateLightSource extends Element {
 
     public Argument[] getArguments(ElementInfo elementInfo) {
         return new Argument[]{
+                new Argument("world", "World", DataType.STRING, elementInfo),
                 new Argument("x", "X", DataType.DOUBLE, elementInfo),
                 new Argument("y", "Y", DataType.DOUBLE, elementInfo),
                 new Argument("z", "Z", DataType.DOUBLE, elementInfo),
-                new Argument("level", "Light level", DataType.DOUBLE, elementInfo),
+                new Argument("level", "Light level", DataType.NUMBER, elementInfo),
         };
     }
 
@@ -59,22 +61,23 @@ public class CreateLightSource extends Element {
         double x = Double.parseDouble(getArguments(elementInfo)[0].getValue(scriptInstance).toString());
         double y = Double.parseDouble(getArguments(elementInfo)[1].getValue(scriptInstance).toString());
         double z = Double.parseDouble(getArguments(elementInfo)[2].getValue(scriptInstance).toString());
-        int strength = Integer.parseInt(getArguments(elementInfo)[3].getValue(scriptInstance).toString());
+        int lightLevel = Integer.parseInt(getArguments(elementInfo)[3].getValue(scriptInstance).toString());
+        String worldName = getArguments(elementInfo)[4].getValue(scriptInstance).toString();
 
-        World world = Bukkit.getWorlds().get(0);
+        World world = Bukkit.getWorld(worldName);
         Location location = new Location(world, x, y, z);
         Block block = location.getBlock();
-        BlockData blockData = Bukkit.createBlockData("minecraft:light[level=" + strength + "]");
+        BlockData blockData = Bukkit.createBlockData("minecraft:light[level=" + lightLevel + "]");
         block.setBlockData(blockData);
 
         // fade out the light source over 5 seconds
         int interval = 20; // 1 second (20 ticks)
         int totalDuration = 100; // 5 seconds (100 ticks)
         int steps = totalDuration / interval;
-        int decrement = strength / steps;
+        int decrement = lightLevel / steps;
 
-        Bukkit.getScheduler().runTaskTimer(UltraCustomizer.getInstance().getBootstrap(), new Runnable() {
-            int currentStrength = strength;
+        new BukkitRunnable() {
+            int currentStrength = lightLevel;
 
             @Override
             public void run() {
@@ -85,10 +88,10 @@ public class CreateLightSource extends Element {
                     block.setBlockData(blockData);
                 } else {
                     block.setType(Material.AIR);
-                    Bukkit.getScheduler().cancelTask(this.hashCode());
+                    this.cancel();
                 }
             }
-        }, 0L, interval);
+        }.runTaskTimer(UltraCustomizer.getInstance().getBootstrap(), 0L, interval);
 
         getConnectors(elementInfo)[0].run(scriptInstance);
     }

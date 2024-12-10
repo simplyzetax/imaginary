@@ -4,7 +4,10 @@ import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.datatypes.DataType;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -44,8 +47,8 @@ public class ClientSideParticleStream extends Element {
         return new Argument[]{
                 new Argument("player", "Player", DataType.PLAYER, elementInfo),
                 new Argument("particle", "Particle Type", DataType.STRING, elementInfo),
-                new Argument("count", "Particle Count", DataType.DOUBLE, elementInfo),
-                new Argument("range", "Max Range", DataType.DOUBLE, elementInfo)
+                new Argument("count", "Particle Count", DataType.NUMBER, elementInfo),
+                new Argument("range", "Max Range", DataType.NUMBER, elementInfo)
         };
     }
 
@@ -58,6 +61,7 @@ public class ClientSideParticleStream extends Element {
     public Child[] getConnectors(ElementInfo elementInfo) {
         return new Child[]{new DefaultChild(elementInfo, "next")};
     }
+
 
     @Override
     public void run(ElementInfo elementInfo, ScriptInstance scriptInstance) {

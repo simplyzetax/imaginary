@@ -11,11 +11,11 @@ public class GreaterThan extends Element {
     }
 
     public String getName() {
-        return "Greater Than";
+        return "Greater Than (Double)";
     }
 
     public String getInternalName() {
-        return "computation-gt";
+        return "computation-gt-double";
     }
 
     public boolean isHidingIfNotCompatible() {
@@ -35,7 +35,7 @@ public class GreaterThan extends Element {
     }
 
     public OutcomingVariable[] getOutcomingVariables(ElementInfo elementInfo) {
-        return new OutcomingVariable[] { new OutcomingVariable("result", "Result", DataType.DOUBLE, elementInfo) };
+        return new OutcomingVariable[] { new OutcomingVariable("result", "Result", DataType.BOOLEAN, elementInfo) };
     }
 
     public Child[] getConnectors(ElementInfo elementInfo) {
