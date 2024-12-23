@@ -2,7 +2,9 @@ package com.github.simplyzetax.apollix;
 
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.Element;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +16,9 @@ import java.util.Arrays;
 public class AddonMain implements Listener {
 
     public static final AddonMain instance = new AddonMain("Apollix", "simplyzetax");
-    private String name, author;
+    public static final Plugin plugin = Bukkit.getPluginManager().getPlugin("UltraCustomizer");
+    private final String name;
+    private final String author;
 
     public AddonMain(String name, String author) {
         this.name = name; this.author = author;

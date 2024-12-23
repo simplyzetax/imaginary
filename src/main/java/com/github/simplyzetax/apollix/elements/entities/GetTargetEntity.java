@@ -52,7 +52,7 @@ public class GetTargetEntity extends Element {
                 new OutcomingVariable("z", "Z", DataType.DOUBLE, elementInfo),
                 new OutcomingVariable("distance", "Distance", DataType.DOUBLE, elementInfo),
                 new OutcomingVariable("found", "Found entity", DataType.BOOLEAN, elementInfo),
-                new OutcomingVariable("entity_uuid", "Entity UUID", DataType.STRING, elementInfo)
+                new OutcomingVariable("entity", "Entity", DataType.STRING, elementInfo)
         };
     }
 
