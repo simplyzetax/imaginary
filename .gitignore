@@ -1,0 +1,22 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+
+# Gradle
+.gradle/
+build/
+
+# Logs
+*.log
+
+# Minecraft plugin specific
+plugins/
+logs/
+crash-reports/
+debug/
+
+# OS specific
+.DS_Store
+Thumbs.db
