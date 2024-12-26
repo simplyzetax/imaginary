@@ -1,7 +1,9 @@
 package com.github.simplyzetax.apollix;
 
+import com.github.simplyzetax.apollix.specifications.EntitySpecificationExtension;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.Element;
+import me.TechsCode.UltraCustomizer.scriptSystem.objects.datatypes.DataType;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -36,6 +38,7 @@ public class AddonMain implements Listener {
      */
     private void onLoad() {
         UltraCustomizer.getInstance().log(name + " onLoad executed. " + "Author: " + author);
+        DataType.registerCustomDataType("entityspecification", new EntitySpecificationExtension());
     }
 
     public String getName() {

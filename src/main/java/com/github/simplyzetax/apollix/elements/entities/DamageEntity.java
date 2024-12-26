@@ -1,8 +1,6 @@
 package com.github.simplyzetax.apollix.elements.entities;
 
-import java.util.UUID;
-
-import com.github.simplyzetax.apollix.data.EntityStore;
+import com.github.simplyzetax.apollix.specifications.EntitySpecification;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
@@ -32,51 +30,58 @@ public class DamageEntity extends Element {
     }
 
     public String[] getDescription() {
-        return new String[] { "Damages the provided entity" };
+        return new String[]{"Damages the provided entity"};
     }
 
     public Argument[] getArguments(ElementInfo elementInfo) {
-        return new Argument[] {
-                new Argument("entity_id", "Entity UUID", DataType.STRING, elementInfo),
+        return new Argument[]{
+                new Argument("entity-spec", "Entity", DataType.getCustomDataType("entityspecification"), elementInfo),
                 new Argument("damage", "Damage", DataType.DOUBLE, elementInfo)
         };
     }
 
     public OutcomingVariable[] getOutcomingVariables(ElementInfo elementInfo) {
-        return new OutcomingVariable[] {};
+        return new OutcomingVariable[]{};
     }
 
     public Child[] getConnectors(ElementInfo elementInfo) {
-        return new Child[] { new DefaultChild(elementInfo, "next") };
+        return new Child[]{new DefaultChild(elementInfo, "next")};
     }
 
     public void run(ElementInfo elementInfo, ScriptInstance scriptInstance) {
-    try {
-        UUID EntityID = UUID.fromString(getArguments(elementInfo)[0].getValue(scriptInstance).toString());
-        double damage = (double) getArguments(elementInfo)[1].getValue(scriptInstance);
+        try {
+            String entityString = getArguments(elementInfo)[0].getValue(scriptInstance).toString();
+            EntitySpecification entitySpec = EntitySpecification.deserialize(entityString);
+            LivingEntity entity = entitySpec.getEntity();
+            Object damageValue = getArguments(elementInfo)[1].getValue(scriptInstance);
 
-        LivingEntity entity = EntityStore.entities.get(EntityID);
+            double damage;
+            if (damageValue instanceof Long) {
+                damage = ((Long) damageValue).doubleValue();
+            } else {
+                damage = (double) damageValue;
+            }
 
-        if (entity != null) {
-            entity.damage(damage);
-        }
-    } catch (IllegalArgumentException e) {
-        if (getOutcomingVariables(elementInfo).length > 0) {
-            getOutcomingVariables(elementInfo)[0].register(scriptInstance, new DataRequester() {
-                public Object request() {
-                    return false;
-                }
-            });
-            if (getOutcomingVariables(elementInfo).length > 1) {
-                getOutcomingVariables(elementInfo)[1].register(scriptInstance, new DataRequester() {
+            if (entity != null) {
+                entity.damage(damage);
+            }
+        } catch (IllegalArgumentException e) {
+            if (getOutcomingVariables(elementInfo).length > 0) {
+                getOutcomingVariables(elementInfo)[0].register(scriptInstance, new DataRequester() {
                     public Object request() {
-                        return 0.0;
+                        return false;
                     }
                 });
+                if (getOutcomingVariables(elementInfo).length > 1) {
+                    getOutcomingVariables(elementInfo)[1].register(scriptInstance, new DataRequester() {
+                        public Object request() {
+                            return 0.0;
+                        }
+                    });
+                }
             }
         }
-    }
 
-    getConnectors(elementInfo)[0].run(scriptInstance);
-}
+        getConnectors(elementInfo)[0].run(scriptInstance);
+    }
 }

@@ -1,6 +1,7 @@
 package com.github.simplyzetax.apollix.elements.entities;
 
-import com.github.simplyzetax.apollix.data.EntityStore;
+import com.github.simplyzetax.apollix.specifications.EntitySpecification;
+import com.github.simplyzetax.apollix.specifications.EntitySpecificationExtension;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
@@ -18,7 +19,9 @@ import java.util.List;
 
 public class GetTargetEntity extends Element {
     public GetTargetEntity(UltraCustomizer ultraCustomizer) {
+
         super(ultraCustomizer);
+        DataType.registerCustomDataType("entityspecification", new EntitySpecificationExtension());
     }
 
     public String getName() {
@@ -52,7 +55,7 @@ public class GetTargetEntity extends Element {
                 new OutcomingVariable("z", "Z", DataType.DOUBLE, elementInfo),
                 new OutcomingVariable("distance", "Distance", DataType.DOUBLE, elementInfo),
                 new OutcomingVariable("found", "Found entity", DataType.BOOLEAN, elementInfo),
-                new OutcomingVariable("entity", "Entity", DataType.STRING, elementInfo)
+                new OutcomingVariable("entity-new", "Entity NEW", DataType.getCustomDataType("entityspecification"), elementInfo)
         };
     }
 
@@ -116,8 +119,6 @@ public class GetTargetEntity extends Element {
                 throw new Exception("No target found");
             }
 
-            EntityStore.entities.put(target.getUniqueId(), target);
-
             final Location entityLoc = target.getLocation();
             final long distance = (long) player.getLocation().distance(entityLoc);
 
@@ -148,7 +149,7 @@ public class GetTargetEntity extends Element {
             });
             getOutcomingVariables(elementInfo)[5].register(scriptInstance, new DataRequester() {
                 public Object request() {
-                    return target.getUniqueId().toString();
+                    return new EntitySpecification(target).serialize();
                 }
             });
         } catch (Exception e) {
@@ -185,7 +186,7 @@ public class GetTargetEntity extends Element {
 
             getOutcomingVariables(elementInfo)[5].register(scriptInstance, new DataRequester() {
                 public Object request() {
-                    return "";
+                    return new EntitySpecificationExtension().serialize(new EntitySpecification(null));
                 }
             });
 

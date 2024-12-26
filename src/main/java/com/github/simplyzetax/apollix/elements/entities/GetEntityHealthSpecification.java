@@ -1,17 +1,19 @@
 package com.github.simplyzetax.apollix.elements.entities;
 
-import java.util.UUID;
-
 import com.github.simplyzetax.apollix.data.EntityStore;
+import com.github.simplyzetax.apollix.specifications.EntitySpecification;
+import com.github.simplyzetax.apollix.specifications.EntitySpecificationExtension;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.datatypes.DataType;
 import org.bukkit.entity.LivingEntity;
 
-public class GetEntityHealth extends Element {
+import java.util.UUID;
 
-    public GetEntityHealth(UltraCustomizer ultraCustomizer) {
+public class GetEntityHealthSpecification extends Element {
+
+    public GetEntityHealthSpecification(UltraCustomizer ultraCustomizer) {
         super(ultraCustomizer);
     }
 
@@ -37,7 +39,7 @@ public class GetEntityHealth extends Element {
 
     public Argument[] getArguments(ElementInfo elementInfo) {
         return new Argument[] {
-                new Argument("entity_id", "Entity UUID", DataType.STRING, elementInfo),
+                new Argument("entity-spec", "Entity NEW", DataType.getCustomDataType("entityspecification"), elementInfo),
         };
     }
 
@@ -55,9 +57,12 @@ public class GetEntityHealth extends Element {
     public void run(ElementInfo elementInfo, ScriptInstance scriptInstance) {
 
         try {
-            UUID EntityID = UUID.fromString(getArguments(elementInfo)[0].getValue(scriptInstance).toString());
 
-            LivingEntity entity = EntityStore.entities.get(EntityID);
+            UltraCustomizer.getInstance().log("Running GetEntityHealthSpecification");
+
+            String entityString = getArguments(elementInfo)[0].getValue(scriptInstance).toString();
+            EntitySpecification entitySpec = EntitySpecification.deserialize(entityString);
+            LivingEntity entity = entitySpec.getEntity();
 
             if(entity == null) {
                 getOutcomingVariables(elementInfo)[0].register(scriptInstance, new DataRequester() {

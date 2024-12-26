@@ -2,7 +2,7 @@ package com.github.simplyzetax.apollix.elements.entities;
 
 import java.util.UUID;
 
-import com.github.simplyzetax.apollix.data.EntityStore;
+import com.github.simplyzetax.apollix.specifications.EntitySpecification;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
@@ -41,7 +41,7 @@ public class SetEntityHealth extends Element {
 
     public Argument[] getArguments(ElementInfo elementInfo) {
         return new Argument[] {
-                new Argument("entity_id", "Entity UUID", DataType.STRING, elementInfo),
+                new Argument("entity-spec", "Entity", DataType.getCustomDataType("entityspecification"), elementInfo),
                 new Argument("health", "Health", DataType.DOUBLE, elementInfo)
         };
     }
@@ -59,10 +59,10 @@ public class SetEntityHealth extends Element {
     public void run(ElementInfo elementInfo, ScriptInstance scriptInstance) {
 
         try {
-            UUID EntityID = UUID.fromString(getArguments(elementInfo)[0].getValue(scriptInstance).toString());
+            String entityString = getArguments(elementInfo)[0].getValue(scriptInstance).toString();
+            EntitySpecification entitySpec = EntitySpecification.deserialize(entityString);
+            LivingEntity entity = entitySpec.getEntity();
             double Health = ((Number) getArguments(elementInfo)[1].getValue(scriptInstance)).doubleValue();
-
-            LivingEntity entity = EntityStore.entities.get(EntityID);
 
             if(entity == null) {
                 getOutcomingVariables(elementInfo)[0].register(scriptInstance, new DataRequester() {

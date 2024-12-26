@@ -1,8 +1,6 @@
 package com.github.simplyzetax.apollix.elements.entities;
 
-import java.util.UUID;
-
-import com.github.simplyzetax.apollix.data.EntityStore;
+import com.github.simplyzetax.apollix.specifications.EntitySpecification;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
@@ -33,53 +31,47 @@ public class SetEntityVelocity extends Element {
     }
 
     public String[] getDescription() {
-        return new String[] { "Sets the velocity of the entity" };
+        return new String[]{"Sets the velocity of the entity"};
     }
 
     public Argument[] getArguments(ElementInfo elementInfo) {
-        return new Argument[] {
-            new Argument("x", "X Axis", DataType.DOUBLE, elementInfo),
-            new Argument("y", "Y Axis", DataType.DOUBLE, elementInfo),
-            new Argument("z", "Z Axis", DataType.DOUBLE, elementInfo),
-            new Argument("entity_id", "Entity UUID", DataType.STRING, elementInfo)
+        return new Argument[]{
+                new Argument("x", "X Axis", DataType.DOUBLE, elementInfo),
+                new Argument("y", "Y Axis", DataType.DOUBLE, elementInfo),
+                new Argument("z", "Z Axis", DataType.DOUBLE, elementInfo),
+                new Argument("entity-spec", "Entity", DataType.getCustomDataType("entityspecification"), elementInfo),
         };
     }
 
     public OutcomingVariable[] getOutcomingVariables(ElementInfo elementInfo) {
-        return new OutcomingVariable[] {};
+        return new OutcomingVariable[]{};
     }
 
     public Child[] getConnectors(ElementInfo elementInfo) {
-        return new Child[] { new DefaultChild(elementInfo, "next") };
+        return new Child[]{new DefaultChild(elementInfo, "next")};
     }
 
     public void run(ElementInfo elementInfo, ScriptInstance scriptInstance) {
-    try {
-        final Number xValue = (Number) getArguments(elementInfo)[0].getValue(scriptInstance);
-        final Number yValue = (Number) getArguments(elementInfo)[1].getValue(scriptInstance);
-        final Number zValue = (Number) getArguments(elementInfo)[2].getValue(scriptInstance);
-        final String entityIdStr = (String) getArguments(elementInfo)[3].getValue(scriptInstance);
-
-        UUID entity_id;
         try {
-            entity_id = UUID.fromString(entityIdStr);
-        } catch (IllegalArgumentException e) {
+            final Number xValue = (Number) getArguments(elementInfo)[0].getValue(scriptInstance);
+            final Number yValue = (Number) getArguments(elementInfo)[1].getValue(scriptInstance);
+            final Number zValue = (Number) getArguments(elementInfo)[2].getValue(scriptInstance);
+            final String entityString = getArguments(elementInfo)[3].getValue(scriptInstance).toString();
+
+            final EntitySpecification entitySpec = EntitySpecification.deserialize(entityString);
+            final LivingEntity entity = entitySpec.getEntity();
+
+            if (entity == null) {
+                UltraCustomizer.getInstance().log(ChatColor.RED + "Entity not found for velocity change.");
+            } else {
+                Vector velocity = new Vector(xValue.doubleValue(), yValue.doubleValue(), zValue.doubleValue());
+                entity.setVelocity(velocity);
+            }
+
             getConnectors(elementInfo)[0].run(scriptInstance);
-            return;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            getConnectors(elementInfo)[0].run(scriptInstance);
         }
-
-        LivingEntity entity = EntityStore.entities.get(entity_id);
-        if (entity == null) {
-            UltraCustomizer.getInstance().log(ChatColor.RED + "Entity not found for velocity change.");
-        } else {
-            Vector velocity = new Vector(xValue.doubleValue(), yValue.doubleValue(), zValue.doubleValue());
-            entity.setVelocity(velocity);
-        }
-
-        getConnectors(elementInfo)[0].run(scriptInstance);
-    } catch (Exception ex) {
-        ex.printStackTrace();
-        getConnectors(elementInfo)[0].run(scriptInstance);
     }
-}
 }

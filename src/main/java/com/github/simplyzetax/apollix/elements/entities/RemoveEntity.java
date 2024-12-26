@@ -1,6 +1,7 @@
 package com.github.simplyzetax.apollix.elements.entities;
 
 import com.github.simplyzetax.apollix.data.EntityStore;
+import com.github.simplyzetax.apollix.specifications.EntitySpecification;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
@@ -33,14 +34,13 @@ public class RemoveEntity extends Element {
 
     public String[] getDescription() {
         return new String[]{
-                "Removes an Entity from the HashMap",
-                "Only use this if you know what you are doing"
+                "Removes an Entity from the world",
         };
     }
 
     public Argument[] getArguments(ElementInfo elementInfo) {
         return new Argument[]{
-                new Argument("entity_id", "Entity UUID", DataType.STRING, elementInfo),
+                new Argument("entity", "Entity", DataType.getCustomDataType("entityspecification"), elementInfo),
         };
     }
 
@@ -56,13 +56,11 @@ public class RemoveEntity extends Element {
 
     public void run(ElementInfo elementInfo, ScriptInstance scriptInstance) {
 
-        UUID EntityID = UUID.fromString(getArguments(elementInfo)[0].getValue(scriptInstance).toString());
+        String entityString = getArguments(elementInfo)[0].getValue(scriptInstance).toString();
+        EntitySpecification entitySpec = EntitySpecification.deserialize(entityString);
+        LivingEntity entity = entitySpec.getEntity();
 
-        LivingEntity entity = EntityStore.entities.get(EntityID);
-
-        if (entity != null) {
-            EntityStore.entities.remove(EntityID);
-        }
+        entity.remove();
 
         getOutcomingVariables(elementInfo)[0].register(scriptInstance, new DataRequester() {
             public Object request() {

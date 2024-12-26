@@ -2,6 +2,7 @@ package com.github.simplyzetax.apollix;
 
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
+import me.TechsCode.UltraCustomizer.interfaceSystem.InterfaceButtonClick;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
 
 public class OnLoadElement extends Element {
@@ -54,7 +55,7 @@ public class OnLoadElement extends Element {
         String name = AddonMain.instance.getName();
         String author = AddonMain.instance.getAuthor();
         UltraCustomizer.getInstance().getBootstrap().getServer().broadcastMessage(name + " (" + author +") test element.");
-
+        
         getConnectors(elementInfo)[0].run(scriptInstance);
     }
 }
