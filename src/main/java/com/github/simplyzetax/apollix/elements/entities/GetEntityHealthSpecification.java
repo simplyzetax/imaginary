@@ -1,6 +1,5 @@
 package com.github.simplyzetax.apollix.elements.entities;
 
-import com.github.simplyzetax.apollix.data.EntityStore;
 import com.github.simplyzetax.apollix.specifications.EntitySpecification;
 import com.github.simplyzetax.apollix.specifications.EntitySpecificationExtension;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
