@@ -1,15 +1,11 @@
 package com.github.simplyzetax.apollix;
 
-import com.github.simplyzetax.apollix.specifications.EntitySpecificationExtension;
+import com.github.simplyzetax.apollix.specifications.entity.Extension;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
-import me.TechsCode.UltraCustomizer.scriptSystem.objects.Element;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.datatypes.DataType;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Used as a main class of addons.
@@ -38,7 +34,7 @@ public class AddonMain implements Listener {
      */
     private void onLoad() {
         UltraCustomizer.getInstance().log(name + " onLoad executed. " + "Author: " + author);
-        DataType.registerCustomDataType("entityspecification", new EntitySpecificationExtension());
+        DataType.registerCustomDataType("entityspecification", new Extension());
     }
 
     public String getName() {

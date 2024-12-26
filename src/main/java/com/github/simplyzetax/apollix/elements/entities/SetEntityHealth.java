@@ -1,8 +1,6 @@
 package com.github.simplyzetax.apollix.elements.entities;
 
-import java.util.UUID;
-
-import com.github.simplyzetax.apollix.specifications.EntitySpecification;
+import com.github.simplyzetax.apollix.specifications.entity.Specification;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
@@ -60,7 +58,7 @@ public class SetEntityHealth extends Element {
 
         try {
             String entityString = getArguments(elementInfo)[0].getValue(scriptInstance).toString();
-            EntitySpecification entitySpec = EntitySpecification.deserialize(entityString);
+            Specification entitySpec = Specification.deserialize(entityString);
             LivingEntity entity = entitySpec.getEntity();
             double Health = ((Number) getArguments(elementInfo)[1].getValue(scriptInstance)).doubleValue();
 

@@ -1,4 +1,4 @@
-package com.github.simplyzetax.apollix.specifications;
+package com.github.simplyzetax.apollix.specifications.entity;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -6,7 +6,7 @@ import org.bukkit.entity.Entity;
 
 import java.util.UUID;
 
-public class EntitySpecification {
+public class Specification {
 
     private LivingEntity entity;
 
@@ -15,7 +15,7 @@ public class EntitySpecification {
      *
      * @param entity the LivingEntity to specify
      */
-    public EntitySpecification(LivingEntity entity) {
+    public Specification(LivingEntity entity) {
         this.entity = entity;
     }
 
@@ -38,7 +38,7 @@ public class EntitySpecification {
      * @return an EntitySpecification containing the LivingEntity
      * @throws IllegalArgumentException if the UUID is invalid or the entity is not found or not a LivingEntity
      */
-    public static EntitySpecification deserialize(String entityUUID) {
+    public static Specification deserialize(String entityUUID) {
         if (entityUUID == null || entityUUID.isEmpty()) {
             throw new IllegalArgumentException("The entity UUID string cannot be null or empty.");
         }
@@ -59,7 +59,7 @@ public class EntitySpecification {
             throw new IllegalArgumentException("Entity with UUID " + entityUUID + " is not a LivingEntity.");
         }
 
-        return new EntitySpecification((LivingEntity) foundEntity);
+        return new Specification((LivingEntity) foundEntity);
     }
 
     /**

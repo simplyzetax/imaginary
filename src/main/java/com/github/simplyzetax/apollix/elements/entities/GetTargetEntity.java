@@ -1,7 +1,7 @@
 package com.github.simplyzetax.apollix.elements.entities;
 
-import com.github.simplyzetax.apollix.specifications.EntitySpecification;
-import com.github.simplyzetax.apollix.specifications.EntitySpecificationExtension;
+import com.github.simplyzetax.apollix.specifications.entity.Specification;
+import com.github.simplyzetax.apollix.specifications.entity.Extension;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
@@ -21,7 +21,7 @@ public class GetTargetEntity extends Element {
     public GetTargetEntity(UltraCustomizer ultraCustomizer) {
 
         super(ultraCustomizer);
-        DataType.registerCustomDataType("entityspecification", new EntitySpecificationExtension());
+        DataType.registerCustomDataType("entityspecification", new Extension());
     }
 
     public String getName() {
@@ -149,7 +149,7 @@ public class GetTargetEntity extends Element {
             });
             getOutcomingVariables(elementInfo)[5].register(scriptInstance, new DataRequester() {
                 public Object request() {
-                    return new EntitySpecification(target).serialize();
+                    return new Specification(target).serialize();
                 }
             });
         } catch (Exception e) {
@@ -186,7 +186,7 @@ public class GetTargetEntity extends Element {
 
             getOutcomingVariables(elementInfo)[5].register(scriptInstance, new DataRequester() {
                 public Object request() {
-                    return new EntitySpecificationExtension().serialize(new EntitySpecification(null));
+                    return new Extension().serialize(new Specification(null));
                 }
             });
 

@@ -1,6 +1,6 @@
 package com.github.simplyzetax.apollix.elements.entities;
 
-import com.github.simplyzetax.apollix.specifications.EntitySpecification;
+import com.github.simplyzetax.apollix.specifications.entity.Specification;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
@@ -58,7 +58,7 @@ public class SetEntityVelocity extends Element {
             final Number zValue = (Number) getArguments(elementInfo)[2].getValue(scriptInstance);
             final String entityString = getArguments(elementInfo)[3].getValue(scriptInstance).toString();
 
-            final EntitySpecification entitySpec = EntitySpecification.deserialize(entityString);
+            final Specification entitySpec = Specification.deserialize(entityString);
             final LivingEntity entity = entitySpec.getEntity();
 
             if (entity == null) {

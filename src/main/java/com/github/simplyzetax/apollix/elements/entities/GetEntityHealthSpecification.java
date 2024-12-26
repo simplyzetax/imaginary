@@ -1,14 +1,11 @@
 package com.github.simplyzetax.apollix.elements.entities;
 
-import com.github.simplyzetax.apollix.specifications.EntitySpecification;
-import com.github.simplyzetax.apollix.specifications.EntitySpecificationExtension;
+import com.github.simplyzetax.apollix.specifications.entity.Specification;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.datatypes.DataType;
 import org.bukkit.entity.LivingEntity;
-
-import java.util.UUID;
 
 public class GetEntityHealthSpecification extends Element {
 
@@ -60,7 +57,7 @@ public class GetEntityHealthSpecification extends Element {
             UltraCustomizer.getInstance().log("Running GetEntityHealthSpecification");
 
             String entityString = getArguments(elementInfo)[0].getValue(scriptInstance).toString();
-            EntitySpecification entitySpec = EntitySpecification.deserialize(entityString);
+            Specification entitySpec = Specification.deserialize(entityString);
             LivingEntity entity = entitySpec.getEntity();
 
             if(entity == null) {

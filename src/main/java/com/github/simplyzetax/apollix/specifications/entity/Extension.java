@@ -1,4 +1,4 @@
-package com.github.simplyzetax.apollix.specifications;
+package com.github.simplyzetax.apollix.specifications.entity;
 
 import me.TechsCode.UltraCustomizer.Folder;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
@@ -9,7 +9,7 @@ import me.TechsCode.UltraCustomizer.scriptSystem.objects.ScriptInstance;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.datatypes.DataTypeSpecification;
 import org.bukkit.entity.Player;
 
-public class EntitySpecificationExtension extends DataTypeSpecification {
+public class Extension extends DataTypeSpecification {
     private static final Phrase GET_PHRASE = Phrase.create("EntitySpecification.title", "Select Entity");
 
     @Override
@@ -40,12 +40,12 @@ public class EntitySpecificationExtension extends DataTypeSpecification {
 
     @Override
     public String serialize(Object object) {
-        return ((EntitySpecification) object).serialize();
+        return ((Specification) object).serialize();
     }
 
     @Override
     public Object deserialize(String data, Folder folder) {
-        return EntitySpecification.deserialize(data);
+        return Specification.deserialize(data);
     }
 
 

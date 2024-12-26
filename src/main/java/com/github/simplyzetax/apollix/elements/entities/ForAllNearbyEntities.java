@@ -1,18 +1,15 @@
 package com.github.simplyzetax.apollix.elements.entities;
 
 import com.github.simplyzetax.apollix.AddonMain;
-import com.github.simplyzetax.apollix.specifications.EntitySpecification;
+import com.github.simplyzetax.apollix.specifications.entity.Specification;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
-import me.TechsCode.UltraCustomizer.scriptSystem.elements.ExecuteForAllPlayers;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.datatypes.DataType;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ForAllNearbyEntities extends Element {
 
@@ -88,7 +85,7 @@ public class ForAllNearbyEntities extends Element {
 
             AddonMain.plugin.getLogger().info("Running for entity: " + entity.getName());
 
-            EntitySpecification entitySpec = new EntitySpecification(entity);
+            Specification entitySpec = new Specification(entity);
             getOutcomingVariables(elementInfo)[0].register(scriptInstance, new DataRequester() {
                 public Object request() {
                     return entitySpec.serialize();
