@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'com.github.simplyzetax.apollix'
+group = 'com.github.simplyzetax.imaginary'
 version = '1.0-SNAPSHOT'
 
 repositories {
