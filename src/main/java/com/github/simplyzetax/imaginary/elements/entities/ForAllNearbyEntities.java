@@ -83,8 +83,6 @@ public class ForAllNearbyEntities extends Element {
         // Execute the child elements for each nearby entity
         for (LivingEntity entity : nearbyEntities) {
 
-            AddonMain.plugin.getLogger().info("Running for entity: " + entity.getName());
-
             Specification entitySpec = new Specification(entity);
             getOutcomingVariables(elementInfo)[0].register(scriptInstance, new DataRequester() {
                 public Object request() {

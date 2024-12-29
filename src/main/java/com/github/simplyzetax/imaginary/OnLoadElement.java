@@ -17,7 +17,7 @@ public class OnLoadElement extends Element {
 
     @Override
     public String getInternalName() {
-        throw new RuntimeException("Not supposed to show up");
+        return "load-base-test-internal-name";
     }
 
     @Override
