@@ -1,6 +1,5 @@
 package com.github.simplyzetax.imaginary.constructors;
 
-import com.github.simplyzetax.imaginary.AddonMain;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.Argument;
@@ -9,27 +8,23 @@ import me.TechsCode.UltraCustomizer.scriptSystem.objects.ElementInfo;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.OutcomingVariable;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.ScriptInstance;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.datatypes.DataType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class RepeatingTick extends Constructor {
     public RepeatingTick(UltraCustomizer ultraCustomizer) {
         super(ultraCustomizer);
-    }
-
-    public void onEnable(ElementInfo elementInfo) {
-        Argument delayArgument = elementInfo.getElement().getArguments(elementInfo)[0];
-        Object obj = delayArgument.getValue(new ScriptInstance());
-        if (obj instanceof Long) {
-            long ticks = (Long) obj;
-
-            // Schedule the task based on the tick argument
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    getConnectors(elementInfo)[0].run(new ScriptInstance());
+        this.plugin.getScheduler().runTaskTimer(() -> call((elementInfo) -> {
+            ScriptInstance instance = new ScriptInstance();
+            Object obj = elementInfo.getElement().getArguments(elementInfo)[0].getValue(instance);
+            if (obj == null) {
+                return null;
+            } else {
+                long ticks = (Long) obj;
+                if (System.currentTimeMillis() % (ticks * 50) == 0L) {
+                    getConnectors(elementInfo)[0].run(instance);
                 }
-            }.runTaskTimer(AddonMain.plugin, 0L, ticks); // Use `ticks` as the interval
-        }
+                return instance;
+            }
+        }), 0L, 1L);
     }
 
     public String getName() {

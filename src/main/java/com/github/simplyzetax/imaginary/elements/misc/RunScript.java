@@ -3,6 +3,7 @@ package com.github.simplyzetax.imaginary.elements.misc;
 import me.TechsCode.UltraCustomizer.Folder;
 import me.TechsCode.UltraCustomizer.UltraCustomizer;
 import me.TechsCode.UltraCustomizer.base.item.XMaterial;
+import me.TechsCode.UltraCustomizer.scriptSystem.gui.FunctionBrowser;
 import me.TechsCode.UltraCustomizer.scriptSystem.gui.ScriptList;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.*;
 import me.TechsCode.UltraCustomizer.scriptSystem.objects.datatypes.DataType;
@@ -128,6 +129,7 @@ public class RunScript extends Element {
                     return true;
                 }
             });
+
             getConnectors(elementInfo)[0].run(scriptInstance);
 
         } catch (Exception e) {
